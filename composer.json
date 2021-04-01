@@ -1,0 +1,39 @@
+{
+    "name": "lcharette/laravel-auth-api",
+    "description": "Basic auth API routes for Single Page Application.",
+    "type": "packages",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Louis Charette"
+        }
+    ],
+    "require": {
+        "php": "^7.3|^8.0",
+        "laravel/framework": "^8.12",
+        "tymon/jwt-auth": "^1.0.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.3.3",
+        "orchestra/testbench": "^6.15",
+        "friendsofphp/php-cs-fixer": "^2.17"
+    },
+    "autoload": {
+        "psr-4": {
+            "Lcharette\\AuthApi\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Lcharette\\AuthApi\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Lcharette\\AuthApi\\AuthApiServiceProvider",
+                "Tymon\\JWTAuth\\Providers\\LaravelServiceProvider"
+            ]
+        }
+    }
+}
