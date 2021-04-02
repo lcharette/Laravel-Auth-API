@@ -10,11 +10,11 @@
 <!-- Links -->
 [app]: https://github.com/lcharette/Laravel-Auth-API
 [app-build]: https://github.com/lcharette/Laravel-Auth-API/actions?query=workflow%3ABuild
-[app-build-master]: https://github.com/lcharette/Laravel-Auth-API/workflows/Build/badge.svg?branch=master
+[app-build-master]: https://github.com/lcharette/Laravel-Auth-API/workflows/Build/badge.svg?branch=main
 [app-build-deevelop]: https://github.com/lcharette/Laravel-Auth-API/workflows/Build/badge.svg?branch=develop
 [app-develop]: https://github.com/lcharette/Laravel-Auth-API/tree/develop
 [app-version]: https://img.shields.io/github/release/lcharette/Laravel-Auth-API.svg
-[app-master-codecov]: https://codecov.io/gh/lcharette/Laravel-Auth-API/branch/master/graph/badge.svg?token=3ZHQD39KK6
+[app-master-codecov]: https://codecov.io/gh/lcharette/Laravel-Auth-API/branch/main/graph/badge.svg?token=3ZHQD39KK6
 [app-develop-codecov]: https://codecov.io/gh/lcharette/Laravel-Auth-API/branch/develop/graph/badge.svg?token=3ZHQD39KK6
 [app-releases]: https://github.com/lcharette/Laravel-Auth-API/releases
 [app-codecov]: https://codecov.io/gh/lcharette/Laravel-Auth-API
