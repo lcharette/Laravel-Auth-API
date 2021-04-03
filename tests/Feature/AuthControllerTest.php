@@ -68,7 +68,7 @@ class AuthControllerTest extends TestCase
         $response
             ->assertStatus(403)
             ->assertJson(['error' => 'Unauthorized']);
-        
+
         // Still a guest
         $this->assertGuest('api');
     }
@@ -98,7 +98,7 @@ class AuthControllerTest extends TestCase
         $response
             ->assertStatus(401)
             ->assertJson(['error' => 'Unauthorized']);
-        
+
         // Still a guest
         $this->assertGuest('api');
     }
@@ -158,5 +158,106 @@ class AuthControllerTest extends TestCase
         $response
             ->assertStatus(401)
             ->assertJson(['error' => 'Unauthorized']);
+    }
+
+    public function testRegister(): void
+    {
+        $response = $this->post('/api/register', [
+            'username'              => 'foo',
+            'email'                 => 'test@test.com',
+            'password'              => 'password',
+            'password_confirmation' => 'password',
+        ]);
+
+        $response
+            ->assertStatus(200)
+            ->assertJson(['status' => 'success']);
+
+        // Still a guest
+        $this->assertGuest('api');
+    }
+
+    public function testRegisterWithNoData(): void
+    {
+        $response = $this->post('/api/register');
+        $response->assertStatus(400);
+    }
+
+    public function testRegisterWithMissingUsername(): void
+    {
+        $response = $this->post('/api/register', [
+            // 'username' => 'foo',
+            'email'                 => 'test@test.com',
+            'password'              => 'password',
+            'password_confirmation' => 'password',
+        ]);
+
+        $response
+            ->assertStatus(400)
+            ->assertJson([
+                'status' => 'error',
+                'errors' => [
+                    'username' => [
+                        'The username field is required.'
+                    ]
+                ]
+            ]);
+    }
+
+    public function testRegisterWithMissingEmail(): void
+    {
+        $response = $this->post('/api/register', [
+            'username' => 'foo',
+            // 'email'    => 'test@test.com',
+            'password'              => 'password',
+            'password_confirmation' => 'password',
+        ]);
+
+        $response
+            ->assertStatus(400)
+            ->assertJson([
+                'status' => 'error',
+                'errors' => [
+                    'email' => [
+                        'The email field is required.'
+                    ]
+                ]
+            ]);
+    }
+
+    public function testRegisterWithMissingPasswordConfirmatiton(): void
+    {
+        $response = $this->post('/api/register', [
+            'username' => 'foo',
+            'email'    => 'test@test.com',
+            'password' => 'password',
+        ]);
+
+        $response
+            ->assertStatus(400)
+            ->assertJson([
+                'status' => 'error',
+                'errors' => [
+                    'password' => [
+                        'The password confirmation does not match.'
+                    ]
+                ]
+            ]);
+    }
+
+    public function testRegisterWithUser(): void
+    {
+        $user = UserFactory::new()->create();
+        $token = JWTAuth::fromUser($user);
+
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+            ->post('/api/register');
+
+        $response
+            ->assertStatus(401)
+            ->assertJson(['error' => 'Unauthorized']);
+
+        // We're still authenticated, as we already were
+        $this->assertAuthenticated('api');
     }
 }

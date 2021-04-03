@@ -15,8 +15,6 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Lcharette\AuthApi\Http\Middleware\Authenticate;
-use Lcharette\AuthApi\Http\Middleware\RequireGuest;
 
 class AuthController extends Controller
 {
@@ -40,7 +38,8 @@ class AuthController extends Controller
             ], 400);
         }
 
-        $user = new $this->getUserModel();
+        $model = $this->getUserModel();
+        $user = new $model();
         $user->username = $request->username;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
