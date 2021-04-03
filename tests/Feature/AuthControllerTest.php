@@ -19,7 +19,7 @@ class AuthControllerTest extends TestCase
     {
         $user = UserFactory::new()->create();
 
-        $response = $this->actingAs($user)->post('/api/login', [
+        $response = $this->post('/api/login', [
             'email'    => $user->email,
             'password' => 'password',
         ]);
@@ -37,11 +37,28 @@ class AuthControllerTest extends TestCase
         $this->assertAuthenticated('api');
     }
 
-    public function testLoginWithWrongPassword(): void
+    public function testLoginWithUser(): void
     {
         $user = UserFactory::new()->create();
 
         $response = $this->actingAs($user)->post('/api/login', [
+            'email'    => $user->email,
+            'password' => 'password',
+        ]);
+
+        $response
+            ->assertStatus(401)
+            ->assertJson(['error' => 'Unauthorized']);
+
+        // We're still authenticated, as we already were
+        $this->assertAuthenticated('api');
+    }
+
+    public function testLoginWithWrongPassword(): void
+    {
+        $user = UserFactory::new()->create();
+
+        $response = $this->post('/api/login', [
             'email'    => $user->email,
             'password' => 'fooBar',
         ]);
@@ -49,6 +66,9 @@ class AuthControllerTest extends TestCase
         $response
             ->assertStatus(403)
             ->assertJson(['error' => 'Unauthorized']);
+        
+        // Still a guest
+        $this->assertGuest('api');
     }
 
     public function testLogout(): void
@@ -63,6 +83,21 @@ class AuthControllerTest extends TestCase
             ->assertStatus(200)
             ->assertJson(['message' => 'Successfully logged out']);
 
+        $this->assertGuest('api');
+    }
+
+    /**
+     * @depends testLogout
+     */
+    public function testLogoutWithNoAccount(): void
+    {
+        $response = $this->post('/api/logout');
+
+        $response
+            ->assertStatus(401)
+            ->assertJson(['error' => 'Unauthorized']);
+        
+        // Still a guest
         $this->assertGuest('api');
     }
 

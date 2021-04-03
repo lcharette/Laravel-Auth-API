@@ -16,19 +16,10 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Lcharette\AuthApi\Http\Middleware\Authenticate;
+use Lcharette\AuthApi\Http\Middleware\RequireGuest;
 
 class AuthController extends Controller
 {
-    /**
-     * Create a new AuthController instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware([Authenticate::class, 'api'], ['except' => ['login', 'register']]);
-    }
-
     /**
      * Register new user.
      *
@@ -127,6 +118,11 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Get the user model from the auth provider config.
+     *
+     * @return \Illuminate\Contracts\Auth\Authenticatable;
+     */
     protected function getUserModel()
     {
         return config('auth.providers.users.model');

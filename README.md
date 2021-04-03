@@ -30,7 +30,6 @@ Basic reusable auth API for Laravel based SPA application.
  TODO:
  - Revoke token
  - Register tests
- - Non user tests
  - Update profile
  - Update password
  - Two Factor
