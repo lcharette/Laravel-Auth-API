@@ -40,11 +40,13 @@ class AuthControllerTest extends TestCase
     public function testLoginWithUser(): void
     {
         $user = UserFactory::new()->create();
+        $token = JWTAuth::fromUser($user);
 
-        $response = $this->actingAs($user)->post('/api/login', [
-            'email'    => $user->email,
-            'password' => 'password',
-        ]);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+            ->post('/api/login', [
+                'email'    => $user->email,
+                'password' => 'password',
+            ]);
 
         $response
             ->assertStatus(401)
@@ -77,7 +79,7 @@ class AuthControllerTest extends TestCase
 
         $token = JWTAuth::fromUser($user);
 
-        $response = $this->actingAs($user)->post('/api/logout?token=' . $token);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->post('/api/logout');
 
         $response
             ->assertStatus(200)
@@ -107,7 +109,7 @@ class AuthControllerTest extends TestCase
 
         $token = JWTAuth::fromUser($user);
 
-        $response = $this->actingAs($user)->post('/api/refresh?token=' . $token);
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->post('/api/refresh');
 
         $expectedStructure = [
             'access_token',
@@ -132,8 +134,9 @@ class AuthControllerTest extends TestCase
     public function testUser(): void
     {
         $user = UserFactory::new()->create();
+        $token = JWTAuth::fromUser($user);
 
-        $response = $this->actingAs($user)->get('/api/user');
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)->get('/api/user');
 
         $expectedStructure = [
             'status',
@@ -142,7 +145,7 @@ class AuthControllerTest extends TestCase
 
         $response
             ->assertStatus(200)
-            ->assertJsonStructure($expectedStructure);
+            ->assertJsonStructure($expectedStructure); // TODO : Test we get the correct info
     }
 
     /**
