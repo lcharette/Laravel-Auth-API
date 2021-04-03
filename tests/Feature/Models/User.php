@@ -11,6 +11,7 @@
 namespace Lcharette\AuthApi\Tests\Feature\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Lcharette\AuthApi\Auth\isJWTSubject;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
@@ -23,6 +24,8 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  */
 class User extends Authenticatable implements JWTSubject
 {
+    use isJWTSubject;
+    
     /**
      * The attributes that are mass assignable.
      *
@@ -33,24 +36,4 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'password',
     ];
-
-    /**
-     * Get the identifier that will be stored in the subject claim of the JWT.
-     *
-     * @return mixed
-     */
-    public function getJWTIdentifier()
-    {
-        return $this->getKey();
-    }
-
-    /**
-     * Return a key value array, containing any custom claims to be added to the JWT.
-     *
-     * @return mixed[]
-     */
-    public function getJWTCustomClaims()
-    {
-        return [];
-    }
 }
