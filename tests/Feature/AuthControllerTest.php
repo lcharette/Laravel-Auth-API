@@ -97,7 +97,7 @@ class AuthControllerTest extends TestCase
 
         $response
             ->assertStatus(401)
-            ->assertJson(['error' => 'Unauthorized']);
+            ->assertJson(['error' => 'The token could not be parsed from the request']);
 
         // Still a guest
         $this->assertGuest('api');
@@ -128,7 +128,7 @@ class AuthControllerTest extends TestCase
 
         $response
             ->assertStatus(401)
-            ->assertJson(['error' => 'Unauthorized']);
+            ->assertJson(['error' => 'The token could not be parsed from the request']);
     }
 
     public function testUser(): void
@@ -157,7 +157,7 @@ class AuthControllerTest extends TestCase
 
         $response
             ->assertStatus(401)
-            ->assertJson(['error' => 'Unauthorized']);
+            ->assertJson(['error' => 'The token could not be parsed from the request']);
     }
 
     public function testRegister(): void
