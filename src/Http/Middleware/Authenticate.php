@@ -11,37 +11,32 @@
 namespace Lcharette\AuthApi\Http\Middleware;
 
 use Closure;
-use Tymon\JWTAuth\Exceptions\JWTException;
-use Tymon\JWTAuth\JWTAuth;
+use Illuminate\Auth\Middleware\Authenticate as Middleware;
 
-class Authenticate
+class Authenticate extends Middleware
 {
-    /**
-     * The JWT Authenticator.
-     *
-     * @var \Tymon\JWTAuth\JWTAuth
-     */
-    protected $auth;
-
-    /**
-     * @param \Tymon\JWTAuth\JWTAuth $auth
-     */
-    public function __construct(JWTAuth $auth)
-    {
-        $this->auth = $auth;
-    }
-
     // Override handle method
     public function handle($request, Closure $next, ...$guards)
     {
-        try {
-            if (!$this->auth->parseToken()->authenticate()) {
-                return response()->json(['error'=>'Unauthorized'], 401);
-            }
-        } catch (JWTException $e) {
-            return response()->json(['error'=>$e->getMessage()], 401);
+        if ($this->authenticate($request, $guards) === false) {
+            return response()->json(['error'=>'Unauthorized'], 401);
         }
 
         return $next($request);
+    }
+
+    // Override authentication method
+    protected function authenticate($request, array $guards)
+    {
+        if (empty($guards)) {
+            $guards = [null];
+        }
+        foreach ($guards as $guard) {
+            if ($this->auth->guard($guard)->check()) {
+                return $this->auth->shouldUse($guard);
+            }
+        }
+
+        return false;
     }
 }

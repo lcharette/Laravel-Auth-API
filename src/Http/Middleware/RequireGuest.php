@@ -11,35 +11,27 @@
 namespace Lcharette\AuthApi\Http\Middleware;
 
 use Closure;
-use Tymon\JWTAuth\Exceptions\JWTException;
-use Tymon\JWTAuth\JWTAuth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RequireGuest
 {
     /**
-     * The JWT Authenticator.
+     * Handle an incoming request.
      *
-     * @var \Tymon\JWTAuth\JWTAuth
+     * @param  \Illuminate\Http\Request $request
+     * @param  \Closure                 $next
+     * @param  string|null              ...$guards
+     * @return mixed
      */
-    protected $auth;
-
-    /**
-     * @param \Tymon\JWTAuth\JWTAuth $auth
-     */
-    public function __construct(JWTAuth $auth)
+    public function handle(Request $request, Closure $next, ...$guards)
     {
-        $this->auth = $auth;
-    }
+        $guards = empty($guards) ? [null] : $guards;
 
-    // Override handle method
-    public function handle($request, Closure $next, ...$guards)
-    {
-        try {
-            if ($this->auth->parseToken()->authenticate()) {
+        foreach ($guards as $guard) {
+            if (Auth::guard($guard)->check()) {
                 return response()->json(['error'=>'Unauthorized'], 401);
             }
-        } catch (JWTException $e) {
-            // Continue on exception
         }
 
         return $next($request);
